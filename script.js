@@ -54,7 +54,7 @@ function percent (x, y) {
     }
 }
 
-let num1 = 0, num2 = 0, op = '', opSymbol = '', c = 0, k = 0;
+let num1 = 0, num2 = 0, op = '', opSymbol = '', c = 0, k = 0, dec = 0;
 let operation = "", display = "", history = "", solution = "";
 let opArray = [];
 
@@ -87,19 +87,48 @@ const hisDisplay = document.querySelector(".history span");
 
 function handleNumsClick (event) {
     const keyValue = event.target.textContent;
-    if(k === 1) {
-        k = 0;
-        display = "";
-    }
-    if (display.length < 9) {
-        display += `${keyValue}`
-        operation += `${keyValue}`
-        curDisplay.textContent = display;
-    }
+    handleNums (keyValue);
 }
 
 function handleOpsClick (event) {
     const keyValue = event.target.textContent;
+    handleOps (keyValue);
+}
+
+function handleEqClick (event) {
+    handleEq();
+}
+
+function handleACClick (event) {
+    handleAC ();
+}
+
+function handleDELClick (event) {
+    handleDEL();
+} 
+
+function handleSignClick (event) {
+    handleSign();
+}
+
+function handleNums (keyValue) {
+    if(k === 1) {
+        k = 0;
+        display = "";
+    }
+    if (dec !== 1 || keyValue !== '.') {
+        if (display.length < 9) {
+            display += `${keyValue}`
+            operation += `${keyValue}`
+            curDisplay.textContent = display;
+        }
+    }
+    if (keyValue === ".") {
+        dec = 1;
+    }
+}
+
+function handleOps (keyValue) {
     switch(opSymbol) {
         case '+':
             op = 'a';
@@ -139,7 +168,7 @@ function handleOpsClick (event) {
     hisDisplay.textContent = history;
 }
 
-function handleEqClick (event) {
+function handleEq () {
     opArray[c] = display;
     switch(opSymbol) {
         case '+':
@@ -176,7 +205,7 @@ function handleEqClick (event) {
     hisDisplay.textContent = history;
 }
 
-function handleACClick (event) {
+function handleAC () {
     history = "";
     opArray = [];
     display = "";
@@ -189,16 +218,15 @@ function handleACClick (event) {
     hisDisplay.textContent = history;
 }
 
-function handleDELClick (event) {
-    console.log(c);
+function handleDEL () {
     if (display !== "") {
         display = display.slice(0, -1);
         operation = operation.slice(0, -1);
         curDisplay.textContent = display;
     }
-} 
+}
 
-function handleSignClick (event) {
+function handleSign () {
     if (display[0] !== "-") {
         display = "-" + display;
     }
@@ -224,7 +252,35 @@ del.addEventListener('click', handleDELClick);
 
 sign.addEventListener('click', handleSignClick);
 
+document.addEventListener('keydown', handleKeyboardInput);
 
+function handleKeyboardInput(event) {
+    const key = event.key;
+    
+    if (key >= '0' && key <= '9') {
+        handleNums(key);
+    } else if (key === '+') {
+        handleOps('+');
+    } else if (key === '-') {
+        handleOps('-');
+    } else if (key === '*') {
+        handleOps('×');
+    } else if (key === '/') {
+        handleOps('÷'); 
+    } else if (key === '%') {
+        handleOps('%');
+    } else if (key === 'Enter' || key === '=') {
+        handleEq();
+    } else if (key === 'Delete') {
+        handleAC();
+    } else if (key === 'Backspace') {
+        handleDEL();
+    } else if (key === 'Control') {
+        handleSign();
+    } else if (key === '.') {
+        handleNums(".");
+    }
+}
 
 
 
